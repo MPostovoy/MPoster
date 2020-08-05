@@ -9,7 +9,7 @@ from queue import Queue
 import requests
 
 
-class KafkaLoggingHandler(logging.Handler):
+class SageKafka(logging.Handler):
     def __init__(self, env: str, system: str, group: str, bootstrap_servers: str, project: str, level: str = 'DEBUG'):
         logging.Handler.__init__(self)
         self.bootstrap_servers = bootstrap_servers
@@ -24,8 +24,7 @@ class KafkaLoggingHandler(logging.Handler):
         self.project = project
         self._producer = Producer(
             {'bootstrap.servers': self.bootstrap_servers,
-             'client.id': f'{group}_logs',
-             }
+             'client.id': f'{group}_logs'}
         )
 
     def delivery_report(self, err, msg):
@@ -66,23 +65,8 @@ class KafkaLoggingHandler(logging.Handler):
         logging.Handler.close(self)
 
 
-def send_text(q):
-    while True:
-        try:
-            data = q.get()
-
-            requests.post(f'http://91.194.226.56:9092', timeout=1, data={'msg': json.dumps(data)})
-            # r = requests.post(f'http://91.194.226.56:9092', timeout=1, data={'msg': json.dumps(data)})
-            # print(r.status_code)
-        except Exception as ex:
-            print('send_text', ex)
-
-        finally:
-            q.task_done()
-
-
-class RestLoggingHandler(logging.Handler):
-    def __init__(self, env: str, system: str, group: str, project: str, level: str = 'DEBUG'):
+class SageRest(logging.Handler):
+    def __init__(self, env: str, system: str, group: str, project: str, host: str, level: str = 'DEBUG'):
         logging.Handler.__init__(self)
 
         self.required_fields = {
@@ -94,10 +78,24 @@ class RestLoggingHandler(logging.Handler):
         }
         self.topic = f'sage-logs-{group}'
         self.project = project
-
+        self.host = host
         self.queues = Queue()
+
+    def send_text(self, queue):
+        while True:
+            try:
+                data = queue.get()
+
+                requests.post(self.host, timeout=1, data={'msg': json.dumps(data)})
+            except Exception as ex:
+                print('send_text', ex)
+
+            finally:
+                queue.task_done()
+
+    def create_q(self):
         for idx in range(5):
-            worker = Thread(target=send_text, args=(idx, self.queues))
+            worker = Thread(target=self.send_text, args=(idx, self.queues))
             worker.setDaemon(True)
             worker.start()
 
