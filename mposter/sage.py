@@ -80,13 +80,14 @@ class SageRest(logging.Handler):
         self.project = project
         self.host = host
         self.queues = Queue()
+        self.create_q()
 
-    def send_text(self, queue):
+    def _send_text(self, idx, queue):
         while True:
             try:
                 data = queue.get()
-
-                requests.post(self.host, timeout=1, data={'msg': json.dumps(data)})
+                r = requests.post(self.host, timeout=1, data={'msg': json.dumps(data)})
+                print(r)
             except Exception as ex:
                 print('send_text', ex)
 
@@ -95,7 +96,7 @@ class SageRest(logging.Handler):
 
     def create_q(self):
         for idx in range(5):
-            worker = Thread(target=self.send_text, args=(idx, self.queues))
+            worker = Thread(target=self._send_text, args=(idx, self.queues))
             worker.setDaemon(True)
             worker.start()
 
