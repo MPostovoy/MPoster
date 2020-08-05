@@ -17,6 +17,7 @@ setuptools.setup(
     url="https://github.com",
     packages=setuptools.find_packages(),
     license='MIT',
+    install_requires=['requests', 'logging', 'confluent_kafka'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
