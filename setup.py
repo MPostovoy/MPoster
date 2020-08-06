@@ -17,7 +17,7 @@ setuptools.setup(
     url="https://github.com/MPostovoy/MPoster",
     packages=setuptools.find_packages(),
     license='MIT',
-    install_requires=['requests', 'confluent_kafka'],
+    install_requires=['requests', 'confluent_kafka', 'yaml'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

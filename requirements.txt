@@ -1,3 +1,4 @@
 requests
 logging
 confluent_kafka
+yaml
