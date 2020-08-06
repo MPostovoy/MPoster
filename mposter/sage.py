@@ -95,7 +95,7 @@ class SageRest(logging.Handler):
                 queue.task_done()
 
     def create_q(self):
-        for idx in range(5):
+        for idx in range(1):
             worker = Thread(target=self._send_text, args=(idx, self.queues))
             worker.setDaemon(True)
             worker.start()
