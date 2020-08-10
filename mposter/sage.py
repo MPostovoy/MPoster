@@ -66,7 +66,7 @@ class SageKafka(logging.Handler):
 
 
 class SageRest(logging.Handler):
-    def __init__(self, env: str, system: str, group: str, project: str, host: str, level: str = 'DEBUG'):
+    def __init__(self, env: str, system: str, group: str, project: str, host: str, threads: int = 2, level: str = 'DEBUG'):
         logging.Handler.__init__(self)
 
         self.required_fields = {
@@ -80,6 +80,7 @@ class SageRest(logging.Handler):
         self.project = project
         self.host = host
         self.queues = Queue()
+        self.threads = threads
         self.create_q()
 
     def _send_text(self, idx, queue):
@@ -95,7 +96,7 @@ class SageRest(logging.Handler):
                 queue.task_done()
 
     def create_q(self):
-        for idx in range(1):
+        for idx in range(self.threads):
             worker = Thread(target=self._send_text, args=(idx, self.queues))
             worker.setDaemon(True)
             worker.start()
