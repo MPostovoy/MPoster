@@ -8,16 +8,16 @@ with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fh:
 
 setuptools.setup(
     name="mposter",
-    version="0.0.7",
+    version="0.0.8",
     author="M.Postovoy",
     author_email="mihan.45rus@ya.ru",
-    description="Test package",
+    description="Additional tools",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/MPostovoy/MPoster",
     packages=setuptools.find_packages(),
     license='MIT',
-    install_requires=['requests', 'confluent_kafka'],
+    install_requires=['requests', 'confluent_kafka', 'zeep'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

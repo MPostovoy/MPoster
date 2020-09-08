@@ -24,3 +24,21 @@ def update_monitoring(crawler: str, reply: str, status: int = 1, host: str = 'lo
                      f'crawler_name={crawler}&status={status}&reply={reply}', timeout=0.1)
     except Exception:
         pass
+
+
+def strip(text):
+    return text.replace('\n', '').strip().replace(u'\xa0', ' ').replace('  ', '')
+
+
+def find(text, start, end):
+    start_idx = text.find(start)
+    if start_idx < 1:
+        return ''
+
+    text = text[start_idx + len(start):]
+    end_idx = text.find(end)
+    if end_idx < 1:
+        return ''
+
+    text = text[:end_idx]
+    return text

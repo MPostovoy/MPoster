@@ -1,3 +1,4 @@
+zeep
 requests
 logging
 confluent_kafka
