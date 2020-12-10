@@ -1,10 +1,11 @@
 import random
 import requests
+from user_agent import generate_user_agent
 
 
 def get_proxies(errors: int = -1, paid_errors: int = 5, paid_type: int = -1, paid_check_host: str = '',
                 paid_host: str = 'http://88.198.167.20:8083/proxies?', paid_max_proxies: int = 12054,
-                vpn: bool = False, vpn_errors: int = 7,
+                vpn: bool = False, vpn_errors: int = 25,
                 tor_min_proxies: int = 8120, tor_max_proxies: int = 8191) -> dict:
     try:
         if errors < paid_errors:
@@ -23,3 +24,38 @@ def get_proxies(errors: int = -1, paid_errors: int = 5, paid_type: int = -1, pai
         _proxies = {"http": f"http://do-worker01p.sn-offline.com:{_port}",
                     "https": f"http://do-worker01p.sn-offline.com:{_port}"}
         return _proxies
+
+
+def request(method: str, link: str, timeout: int = 7, verify: bool = True, data: dict = None, json=None,
+            max_errors: int = 6, proxies: dict = None, proxies_vpn: bool = True, paid_errors: int = 4,
+            paid_check_host: str = '', continue_status: bool = True, headers: dict = None,
+            session=None):
+    _errors: int = 0
+    while _errors < max_errors:
+        try:
+            print(method, link)
+            if proxies is None:
+                proxies: dict = get_proxies(_errors, paid_host='http://vm-additional-services02p:8083/proxies?',
+                                            paid_errors=paid_errors, vpn=proxies_vpn, paid_check_host=paid_check_host)
+
+            if headers is None:
+                headers = {'User-Agent': generate_user_agent()}
+            else:
+                headers['User-Agent'] = generate_user_agent()
+
+            if session is None:
+                _response = requests.request(method, link, proxies=proxies, timeout=timeout, verify=verify, data=data,
+                                             json=json, headers=headers)
+            else:
+                _response = session.request(method, link, proxies=proxies, timeout=timeout, verify=verify, data=data,
+                                            json=json, headers=headers)
+            print(method, link, _response.status_code)
+
+            if continue_status and _response.status_code != 200:
+                _errors += 1
+                continue
+
+            return _response
+        except Exception as ex:
+            print(ex)
+            _errors += 1
