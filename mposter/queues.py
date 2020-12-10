@@ -24,18 +24,18 @@ class Queues(object):
         self.workers[-1][1].set()
         del self.workers[-1]
 
-    def _thread_get(self, threading_idx, queue, stop_event):
+    def _thread_get(self, threading_idx, q, stop_event):
         while not stop_event.is_set():
             try:
                 print(f'{threading_idx} / {len(self.workers)}')
-                self.target(queue.get())
+                self.target(q.get())
                 print(f'{threading_idx} / {len(self.workers)}; done')
 
             except Exception as ex:
                 print(ex)
 
             finally:
-                queue.task_done()
+                q.task_done()
 
     def join(self):
         self.queues.join()

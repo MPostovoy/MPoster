@@ -8,7 +8,7 @@ with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fh:
 
 setuptools.setup(
     name="mposter",
-    version="0.0.10",
+    version="0.0.11",
     author="M.Postovoy",
     author_email="mihan.45rus@ya.ru",
     description="Additional tools",
@@ -24,3 +24,4 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
 )
+# https://proglib.io/p/kak-opublikovat-svoyu-python-biblioteku-na-pypi-2020-01-28
