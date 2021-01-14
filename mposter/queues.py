@@ -28,7 +28,7 @@ class Queues(object):
         while not stop_event.is_set():
             try:
                 print(f'{threading_idx} / {len(self.workers)}')
-                self.target(q.get())
+                self.target(q.get(), threading_idx=threading_idx)
                 print(f'{threading_idx} / {len(self.workers)}; done')
 
             except Exception as ex:
