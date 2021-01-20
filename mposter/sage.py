@@ -87,7 +87,7 @@ class SageRest(logging.Handler):
         while True:
             try:
                 data = queue.get()
-                r = requests.post(self.host, timeout=3, data={'msg': str(data)})
+                r = requests.post(self.host, timeout=3, data={'msg': json.dumps(data, ensure_ascii=False)})
                 print(self.host, r)
             except Exception as ex:
                 print('send_text', self.host, ex)
