@@ -102,6 +102,7 @@ class SageRest(logging.Handler):
         self.dir_path = dir_path
 
     def _send_text(self, idx, queue):
+        _host = self.host
         while True:
             try:
                 data = queue.get()
@@ -110,16 +111,19 @@ class SageRest(logging.Handler):
                     r = requests.post(self.host, timeout=3, data={'msg': json.dumps(data, ensure_ascii=False)})
                     print(self.host, r)
                 else:
-                    _data = read_config(os.path.join(self.dir_path, 'config.csv'), 'config')
+                    _data = read_config(os.path.join(self.dir_path, 'config.yml'), 'sageRest')
                     print(_data)
                     if _data is not None and 'request' in _data and _data['request']:
-                        r = requests.post(self.host, timeout=3, data={'msg': json.dumps(data, ensure_ascii=False)})
-                        print(self.host, r)
+                        if 'restHost' in _data:
+                            _host = _data['restHost']
+
+                        r = requests.post(_host, timeout=3, data={'msg': json.dumps(data, ensure_ascii=False)})
+                        print(_host, r)
                     else:
                         print('request false!')
 
             except Exception as ex:
-                print('send_text', self.host, ex)
+                print('send_text', _host, ex)
 
             finally:
                 queue.task_done()
