@@ -111,6 +111,7 @@ class SageRest(logging.Handler):
                     print(self.host, r)
                 else:
                     _data = read_config(os.path.join(self.dir_path, 'config.csv'), 'config')
+                    print(_data)
                     if _data is not None and 'request' in _data['request'] and _data['request']:
                         r = requests.post(self.host, timeout=3, data={'msg': json.dumps(data, ensure_ascii=False)})
                         print(self.host, r)
