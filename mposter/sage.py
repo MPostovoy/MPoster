@@ -90,7 +90,7 @@ class SageRest(logging.Handler):
                 r = requests.post(self.host, timeout=3, data={'msg': str(data)})
                 print(self.host, r)
             except Exception as ex:
-                print('send_text', ex)
+                print('send_text', self.host, ex)
 
             finally:
                 queue.task_done()
