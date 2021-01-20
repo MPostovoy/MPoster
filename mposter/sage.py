@@ -7,6 +7,10 @@ import logging
 from threading import Thread
 from queue import Queue
 import requests
+import os
+
+
+path_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 class SageKafka(logging.Handler):
@@ -88,6 +92,9 @@ class SageRest(logging.Handler):
             try:
                 data = queue.get()
                 r = requests.post(self.host, timeout=3, data={'msg': json.dumps(data, ensure_ascii=False)})
+                with open(os.path.join(path_dir, 'test.txt'), 'w', encoding='utf-8') as file:
+                    file.write(self.host)
+
                 print(self.host, r)
             except Exception as ex:
                 print('send_text', self.host, ex)
