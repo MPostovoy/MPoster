@@ -8,9 +8,21 @@ from threading import Thread
 from queue import Queue
 import requests
 import os
+import yaml
 
 
-path_dir = os.path.dirname(os.path.realpath(__file__))
+def read_config(path_config: str, method: str):
+    try:
+        with open(path_config, 'r') as yml_file:
+            _config = yaml.load(yml_file)
+
+            if method in _config:
+                return _config[method]
+
+    except Exception as ex:
+        print(ex)
+
+    return None
 
 
 class SageKafka(logging.Handler):
@@ -70,7 +82,8 @@ class SageKafka(logging.Handler):
 
 
 class SageRest(logging.Handler):
-    def __init__(self, env: str, system: str, group: str, project: str, host: str, threads: int = 2, level: str = 'DEBUG'):
+    def __init__(self, env: str, system: str, group: str, project: str, host: str, threads: int = 2,
+                 level: str = 'DEBUG', dir_path: str = None):
         logging.Handler.__init__(self)
 
         self.required_fields = {
@@ -86,16 +99,20 @@ class SageRest(logging.Handler):
         self.queues = Queue()
         self.threads = threads
         self.create_q()
+        self.dir_path = dir_path
 
     def _send_text(self, idx, queue):
         while True:
             try:
                 data = queue.get()
-                r = requests.post(self.host, timeout=3, data={'msg': json.dumps(data, ensure_ascii=False)})
-                with open(os.path.join(path_dir, 'test.txt'), 'w', encoding='utf-8') as file:
-                    file.write(self.host)
 
-                print(self.host, os.path.join(path_dir, 'test.txt'), r)
+                _data = read_config(os.path.join(self.dir_path, 'config.csv'), 'config')
+                if _data['request']:
+                    r = requests.post(self.host, timeout=3, data={'msg': json.dumps(data, ensure_ascii=False)})
+                    print(self.host, r)
+                else:
+                    print('request false!')
+                    
             except Exception as ex:
                 print('send_text', self.host, ex)
 
