@@ -95,7 +95,7 @@ class SageRest(logging.Handler):
                 with open(os.path.join(path_dir, 'test.txt'), 'w', encoding='utf-8') as file:
                     file.write(self.host)
 
-                print(self.host, r)
+                print(self.host, os.path.join(path_dir, 'test.txt'), r)
             except Exception as ex:
                 print('send_text', self.host, ex)
 
