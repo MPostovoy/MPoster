@@ -1,6 +1,7 @@
 import random
 import requests
 from user_agent import generate_user_agent
+import json
 
 
 def get_proxies(errors: int = -1, paid_errors: int = 5, paid_type: int = -1, paid_check_host: str = '',
@@ -59,3 +60,19 @@ def request(method: str, link: str, timeout: int = 7, verify: bool = True, data:
         except Exception as ex:
             print(ex)
             _errors += 1
+
+
+def parsing_headers(text: str):
+    _data: list = text.split('\n')
+    if len(_data) < 2:
+        return None
+
+    _headers: dict = dict()
+    for line in _data:
+        line = line.split(': ', 1)
+        if len(line) < 2:
+            continue
+
+        _headers[line[0]] = line[1]
+
+    return _headers
