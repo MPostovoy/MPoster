@@ -29,9 +29,9 @@ from mposter import http
 fuck_proxies = http.Fuck_proxies()
 ...
 for proxy in proxies:
-	if fuck_proxies.check_proxy(_proxies.get('http')):  # Прокси есть в пуле, она плохая, идём за новой
-		continue
+    if fuck_proxies.check_proxy(_proxies.get('http')):  # Прокси есть в пуле, она плохая, идём за новой
+        continue
 ...
 if r.status_code == 403:  # Прокси забанена, добавляем в пул
-	fuck_proxies.add(_proxy_port)
+    fuck_proxies.add(_proxy_port)
 ```

@@ -66,7 +66,7 @@ def request(method: str, link: str, timeout: int = 7, verify: bool = True, data:
             return _response
         except Exception as ex:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            logger.exception(f'REQUEST: {method} response to: {link}, exception: {exc_tb.tb_lineno}.{ex}')
+            logger.error(f'REQUEST: {method} response to: {link}, exception: {exc_tb.tb_lineno}.{ex}')
             _errors += 1
 
 
