@@ -1,6 +1,6 @@
 # MPoster
 
-## queues
+## Queues
 
 Работа с очередями:
 
@@ -15,4 +15,5 @@ for i in range(10):
 _queues.join()
 ```
 Обьявление Queues, threads - Кол-во потоков, target - метод, который должен отработать.
+
 _queues.put - Добавляем в очередь
