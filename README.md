@@ -2,12 +2,17 @@
 
 ## queues
 
-pytest queues
+Работа с очередями:
 
-```sh
-git clone git@github.com:libp2p/py-libp2p.git
-cd py-libp2p
-virtualenv -p python3.7 venv
-. venv/bin/activate
-pip install -e .[dev]
+```from mposter import queues
+
+def queues_method(data):
+    print(data)
+
+_queues = queues.Queues(threads=10, target=queues_method)
+for i in range(10):
+    _queues.put(i)
+_queues.join()
 ```
+Обьявление Queues, threads - Кол-во потоков, target - метод, который должен отработать.
+_queues.put - Добавляем в очередь
