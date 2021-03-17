@@ -1,3 +1,4 @@
+loguru
 user_agent
 zeep
 requests

@@ -8,7 +8,7 @@ with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fh:
 
 setuptools.setup(
     name="mposter",
-    version="1.4.1",
+    version="1.5.1",
     author="M.Postovoy",
     author_email="mihan.45rus@ya.ru",
     description="Additional tools",
@@ -17,7 +17,7 @@ setuptools.setup(
     url="https://github.com/MPostovoy/MPoster",
     packages=setuptools.find_packages(),
     license='MIT',
-    install_requires=['requests', 'confluent_kafka', 'zeep'],
+    install_requires=['requests', 'confluent_kafka', 'zeep', 'loguru'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

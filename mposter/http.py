@@ -1,7 +1,9 @@
+from loguru import logger
 import random
 import requests
 from user_agent import generate_user_agent
 import json
+import time
 
 
 def get_proxies(errors: int = -1, paid_errors: int = 5, paid_type: int = -1, paid_check_host: str = '',
@@ -76,3 +78,23 @@ def parsing_headers(text: str):
         _headers[line[0]] = line[1]
 
     return _headers
+
+
+class Fuck_proxies(object):
+    def __init__(self, timeout: int = 90):
+        self.proxies = dict()
+        self.timeout = timeout
+
+    def check_proxy(self, proxy: str):
+        if proxy in self.proxies:
+            if int(time.time()) - self.proxies[proxy] < self.timeout:
+
+                logger.info(f'Fuck proxies: len proxies: {len(self.proxies)}')
+                return True
+            else:
+                del self.proxies[proxy]
+        return False
+
+    def add(self, proxy: str):
+        self.proxies[proxy] = int(time.time())
+        logger.info(f'Fuck proxies: {proxy} add to fuck_proxies, len: {len(self.proxies)}')
