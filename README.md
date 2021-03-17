@@ -4,7 +4,8 @@
 
 Работа с очередями:
 
-```from mposter import queues
+```
+from mposter import queues
 
 def queues_method(data):
     print(data)
