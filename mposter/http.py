@@ -1,13 +1,13 @@
-from loguru import logger
-import random
-import requests
 from user_agent import generate_user_agent
-import json
+from loguru import logger
+import requests
+import random
 import time
+import sys
 
 
 def get_proxies(errors: int = -1, paid_errors: int = 5, paid_type: int = -1, paid_check_host: str = '',
-                paid_host: str = 'http://88.198.167.20:8083/proxies?', paid_max_proxies: int = 12054,
+                paid_host: str = 'http://88.198.167.20:8083/proxies?', paid_max_proxies: int = 12127,
                 vpn: bool = False, vpn_errors: int = 25,
                 tor_min_proxies: int = 8120, tor_max_proxies: int = 8191) -> dict:
     try:
@@ -36,10 +36,13 @@ def request(method: str, link: str, timeout: int = 7, verify: bool = True, data:
     _errors: int = 0
     while _errors < max_errors:
         try:
-            print(method, link)
             if proxies is None:
-                proxies: dict = get_proxies(_errors, paid_host='http://vm-additional-services02p:8083/proxies?',
-                                            paid_errors=paid_errors, vpn=proxies_vpn, paid_check_host=paid_check_host)
+                _proxies: dict = get_proxies(_errors, paid_host='http://vm-additional-services02p:8083/proxies?',
+                                             paid_errors=paid_errors, vpn=proxies_vpn, paid_check_host=paid_check_host)
+            else:
+                _proxies = proxies
+
+            logger.info(f'REQUEST: {method} request to: {link} (proxies: {_proxies}), errors: {_errors}/{max_errors}')
 
             if headers is None:
                 headers = {'User-Agent': generate_user_agent()}
@@ -47,12 +50,14 @@ def request(method: str, link: str, timeout: int = 7, verify: bool = True, data:
                 headers['User-Agent'] = generate_user_agent()
 
             if session is None:
-                _response = requests.request(method, link, proxies=proxies, timeout=timeout, verify=verify, data=data,
+                _response = requests.request(method, link, proxies=_proxies, timeout=timeout, verify=verify, data=data,
                                              json=json, headers=headers)
             else:
-                _response = session.request(method, link, proxies=proxies, timeout=timeout, verify=verify, data=data,
+                _response = session.request(method, link, proxies=_proxies, timeout=timeout, verify=verify, data=data,
                                             json=json, headers=headers)
-            print(method, link, _response.status_code)
+
+            logger.info(f'REQUEST: {method} response to: {link} (proxies: {_proxies}), '
+                        f'status code: {_response.status_code}')
 
             if continue_status and _response.status_code != 200:
                 _errors += 1
@@ -60,7 +65,8 @@ def request(method: str, link: str, timeout: int = 7, verify: bool = True, data:
 
             return _response
         except Exception as ex:
-            print(ex)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            logger.exception(f'REQUEST: {method} response to: {link}, exception: {exc_tb.tb_lineno}.{ex}')
             _errors += 1
 
 
@@ -89,7 +95,7 @@ class Fuck_proxies(object):
         if proxy in self.proxies:
             if int(time.time()) - self.proxies[proxy] < self.timeout:
 
-                logger.info(f'Fuck proxies: len proxies: {len(self.proxies)}')
+                logger.info(f'FUCK PROXIES: len proxies: {len(self.proxies)}')
                 return True
             else:
                 del self.proxies[proxy]
@@ -97,4 +103,4 @@ class Fuck_proxies(object):
 
     def add(self, proxy: str):
         self.proxies[proxy] = int(time.time())
-        logger.info(f'Fuck proxies: {proxy} add to fuck_proxies, len: {len(self.proxies)}')
+        logger.info(f'FUCK PROXIES: {proxy} add to fuck_proxies, len: {len(self.proxies)}')
