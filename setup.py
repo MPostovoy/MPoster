@@ -8,7 +8,7 @@ with open(os.path.join(os.path.dirname(__file__), "README.md"), "r") as fh:
 
 setuptools.setup(
     name="mposter",
-    version="1.5.3",
+    version="1.5.4",
     author="M.Postovoy",
     author_email="mihan.45rus@ya.ru",
     description="Additional tools",
