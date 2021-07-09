@@ -50,3 +50,37 @@ def find(text, start, end):
 
     text = text[:end_idx]
     return text
+
+
+phone_codes = [
+    '388', '385', '416', '814', '818', '851', '472', '483', '302', '492', '844', '817', '820', '844', '473', '426',
+    '493', '395', '866', '401', '484', '415', '878', '384', '833', '494', '861', '862', '391', '352', '471', '812',
+    '813', '474', '413', '495', '495', '496', '815', '818', '831', '816', '383', '381', '353', '486', '841', '342',
+    '423', '811', '877', '347', '301', '872', '873', '847', '814', '821', '836', '834', '867', '843', '855', '394',
+    '341', '390', '835', '411', '863', '491', '846', '848', '845', '424', '343', '481', '863', '865', '879', '475',
+    '482', '382', '487', '345', '346', '842', '421', '351', '871', '302', '427', '349'
+]
+
+
+def format_phone(phone: str) -> int:
+    phone = ''.join([d for d in phone if d.isdigit()])
+    if len(phone) == 11:
+        if phone.startswith('8'):
+            formatted_phone = int(f'7{phone[1:]}')
+        elif phone.startswith('7'):
+            formatted_phone = int(phone)
+        else:
+            formatted_phone = 0
+    elif len(phone) == 10:
+        if phone.startswith('9'):
+            formatted_phone = int(f'7{phone}')
+        elif any([phone.startswith(_code) for _code in phone_codes]):
+            formatted_phone = int(f'7{phone}')
+        else:
+            formatted_phone = ''
+    else:
+        formatted_phone = ''
+    if formatted_phone != '':
+        return int(formatted_phone)
+    else:
+        return 0
